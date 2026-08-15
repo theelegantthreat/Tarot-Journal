@@ -9,10 +9,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Surface
@@ -96,30 +99,44 @@ fun SpreadVisualizer(
 
             when (spreadType) {
                 SpreadType.DAILY_ALIGNMENT -> {
-                    // Single card centered
+                    // Single card scrollable in both horizontal and vertical axes
                     drawnCards.firstOrNull()?.let { drawn ->
                         val card = DeckRepository.getCardById(drawn.cardId)
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.padding(vertical = 8.dp)
+                        val hScrollState = rememberScrollState()
+                        val vScrollState = rememberScrollState()
+
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .heightIn(max = 380.dp)
+                                .verticalScroll(vScrollState)
+                                .horizontalScroll(hScrollState),
+                            contentAlignment = Alignment.Center
                         ) {
-                            TarotCardView(
-                                card = card,
-                                isReversed = drawn.isReversed,
-                                positionTitle = drawn.positionName,
-                                cardWidth = 160.dp,
-                                cardHeight = 250.dp,
-                                onCardClick = { onCardClick(drawn) },
-                                onInfoClick = { onCardClick(drawn) }
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(
-                                text = drawn.positionMeaning,
-                                color = StarlightMuted,
-                                fontSize = 11.sp,
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.padding(horizontal = 16.dp)
-                            )
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier
+                                    .wrapContentWidth()
+                                    .padding(vertical = 8.dp, horizontal = 16.dp)
+                            ) {
+                                TarotCardView(
+                                    card = card,
+                                    isReversed = drawn.isReversed,
+                                    positionTitle = drawn.positionName,
+                                    cardWidth = 160.dp,
+                                    cardHeight = 250.dp,
+                                    onCardClick = { onCardClick(drawn) },
+                                    onInfoClick = { onCardClick(drawn) }
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    text = drawn.positionMeaning,
+                                    color = StarlightMuted,
+                                    fontSize = 11.sp,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.padding(horizontal = 16.dp)
+                                )
+                            }
                         }
                     }
                 }

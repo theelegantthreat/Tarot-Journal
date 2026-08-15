@@ -83,12 +83,8 @@ fun ProminentLunarBiorhythmTracker(
         border = BorderStroke(1.dp, ObsidianBorder)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            // Header Bar with Badge
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            // Header Section
+            Column(modifier = Modifier.fillMaxWidth()) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         imageVector = Icons.Default.NightsStay,
@@ -105,6 +101,8 @@ fun ProminentLunarBiorhythmTracker(
                         letterSpacing = 1.2.sp
                     )
                 }
+
+                Spacer(modifier = Modifier.height(4.dp))
 
                 Surface(
                     color = ObsidianSurfaceVariant,
@@ -165,31 +163,28 @@ fun ProminentLunarBiorhythmTracker(
                 Spacer(modifier = Modifier.width(14.dp))
 
                 Column(modifier = Modifier.weight(1f)) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth()
+                    Text(
+                        text = lunarInfo.phaseName,
+                        color = StarlightWhite,
+                        fontSize = 18.sp,
+                        fontFamily = FontFamily.Serif,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Surface(
+                        color = GoldGlow.copy(alpha = 0.15f),
+                        shape = RoundedCornerShape(6.dp),
+                        border = BorderStroke(0.5.dp, StarlightGold.copy(alpha = 0.5f))
                     ) {
                         Text(
-                            text = lunarInfo.phaseName,
-                            color = StarlightWhite,
-                            fontSize = 18.sp,
-                            fontFamily = FontFamily.Serif,
-                            fontWeight = FontWeight.Bold
+                            text = "${lunarInfo.illuminationPercentage}% Illumination",
+                            color = StarlightGold,
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
                         )
-                        Surface(
-                            color = GoldGlow.copy(alpha = 0.15f),
-                            shape = RoundedCornerShape(6.dp),
-                            border = BorderStroke(0.5.dp, StarlightGold.copy(alpha = 0.5f))
-                        ) {
-                            Text(
-                                text = "${lunarInfo.illuminationPercentage}% Illumination",
-                                color = StarlightGold,
-                                fontSize = 10.sp,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
-                            )
-                        }
                     }
 
                     Spacer(modifier = Modifier.height(4.dp))

@@ -7,7 +7,9 @@ val ObsidianDeep = Color(0xFF0C0614)
 val ObsidianSurface = Color(0xFF160E24)
 val ObsidianSurfaceVariant = Color(0xFF221638)
 val ObsidianCard = Color(0xFF2A1C44)
+val ObsidianCardSecondary = Color(0xFF1E1332)
 val ObsidianBorder = Color(0xFF432E6E)
+val DarkPurple = Color(0xFF1D0F33)
 
 // Radiant Astral Accents
 val StarlightGold = Color(0xFFFFD54F)
