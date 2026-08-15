@@ -1,0 +1,6 @@
+{
+  "name": "Tarot Journal",
+  "description": "Daily & weekly tarot alignment journal with custom spreads, automated sentiment analysis, lunar biorhythm tracking, and encrypted cloud sync.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
