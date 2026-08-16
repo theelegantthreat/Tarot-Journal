@@ -123,8 +123,8 @@ fun SpreadVisualizer(
                                     card = card,
                                     isReversed = drawn.isReversed,
                                     positionTitle = drawn.positionName,
-                                    cardWidth = 160.dp,
-                                    cardHeight = 250.dp,
+                                    cardWidth = 130.dp,
+                                    cardHeight = 200.dp,
                                     onCardClick = { onCardClick(drawn) },
                                     onInfoClick = { onCardClick(drawn) }
                                 )
@@ -186,7 +186,7 @@ fun SpreadVisualizer(
                     ) {
                         // Top (The Crown)
                         drawnCards.getOrNull(3)?.let { drawn ->
-                            SpreadCardSlot(drawn, 110.dp, 170.dp, onCardClick)
+                            SpreadCardSlot(drawn, 130.dp, 200.dp, onCardClick)
                         }
 
                         // Middle Row: (The Challenge / The Core / The Resolution)
@@ -195,19 +195,19 @@ fun SpreadVisualizer(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             drawnCards.getOrNull(1)?.let { drawn ->
-                                SpreadCardSlot(drawn, 100.dp, 155.dp, onCardClick)
+                                SpreadCardSlot(drawn, 130.dp, 200.dp, onCardClick)
                             }
                             drawnCards.getOrNull(0)?.let { drawn ->
-                                SpreadCardSlot(drawn, 110.dp, 170.dp, onCardClick)
+                                SpreadCardSlot(drawn, 130.dp, 200.dp, onCardClick)
                             }
                             drawnCards.getOrNull(4)?.let { drawn ->
-                                SpreadCardSlot(drawn, 100.dp, 155.dp, onCardClick)
+                                SpreadCardSlot(drawn, 130.dp, 200.dp, onCardClick)
                             }
                         }
 
                         // Bottom (The Root)
                         drawnCards.getOrNull(2)?.let { drawn ->
-                            SpreadCardSlot(drawn, 110.dp, 170.dp, onCardClick)
+                            SpreadCardSlot(drawn, 130.dp, 200.dp, onCardClick)
                         }
                     }
                 }
@@ -260,7 +260,7 @@ fun SpreadVisualizer(
                             val card = DeckRepository.getCardById(drawn.cardId)
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
-                                modifier = Modifier.width(120.dp)
+                                modifier = Modifier.width(130.dp)
                             ) {
                                 Text(
                                     text = "#${index + 1}",
@@ -273,8 +273,8 @@ fun SpreadVisualizer(
                                     card = card,
                                     isReversed = drawn.isReversed,
                                     positionTitle = drawn.positionName,
-                                    cardWidth = 120.dp,
-                                    cardHeight = 185.dp,
+                                    cardWidth = 130.dp,
+                                    cardHeight = 200.dp,
                                     onCardClick = { onCardClick(drawn) },
                                     onInfoClick = { onCardClick(drawn) }
                                 )
