@@ -10,6 +10,7 @@ import com.example.data.model.JournalEntry
 import com.example.data.model.MoonPhase
 import com.example.data.model.SpreadType
 import com.example.data.model.TarotCard
+import com.example.data.remote.GeminiTarotService
 import com.example.data.repository.DeckRepository
 import com.example.data.repository.TarotRepository
 import com.example.data.util.LunarCalculator
@@ -115,6 +116,16 @@ class TarotViewModel(application: Application) : AndroidViewModel(application) {
     private val _currentLunarInfo = MutableStateFlow(LunarCalculator.calculateLunarInfo())
     val currentLunarInfo: StateFlow<LunarInfo> = _currentLunarInfo.asStateFlow()
 
+    // Card of the Day State
+    private val _cardOfTheDay = MutableStateFlow<Pair<TarotCard, Boolean>>(DeckRepository.getRandomCard() to (Random.nextFloat() < 0.2f))
+    val cardOfTheDay: StateFlow<Pair<TarotCard, Boolean>> = _cardOfTheDay.asStateFlow()
+
+    private val _cardOfTheDayAffirmation = MutableStateFlow<String>("Loading today's divine affirmation...")
+    val cardOfTheDayAffirmation: StateFlow<String> = _cardOfTheDayAffirmation.asStateFlow()
+
+    private val _isLoadingAffirmation = MutableStateFlow<Boolean>(false)
+    val isLoadingAffirmation: StateFlow<Boolean> = _isLoadingAffirmation.asStateFlow()
+
     init {
         val db = TarotDatabase.getDatabase(application)
         repository = TarotRepository(db.tarotDao())
@@ -130,6 +141,32 @@ class TarotViewModel(application: Application) : AndroidViewModel(application) {
             initDailyAlignmentDraw()
             initCustomSpread(SpreadType.THREE_CARD_TIMELINE)
             initWeeklySynthesisSpread()
+            fetchCardOfTheDayAffirmation()
+        }
+    }
+
+    fun refreshCardOfTheDay() {
+        val newCard = DeckRepository.getRandomCard()
+        val isRev = Random.nextFloat() < 0.2f
+        _cardOfTheDay.value = newCard to isRev
+        fetchCardOfTheDayAffirmation()
+    }
+
+    fun fetchCardOfTheDayAffirmation() {
+        viewModelScope.launch {
+            _isLoadingAffirmation.value = true
+            val (card, isRev) = _cardOfTheDay.value
+            val result = GeminiTarotService.generateDailyAffirmation(card, isRev)
+            result.onSuccess { affirmation ->
+                _cardOfTheDayAffirmation.value = affirmation
+            }.onFailure {
+                _cardOfTheDayAffirmation.value = if (isRev) {
+                    "I embrace the inner lessons of ${card.name}, gently realigning my purpose with clarity and patience."
+                } else {
+                    "I step boldly into the wisdom of ${card.name}, aligning my focus with creative momentum and boundless insight."
+                }
+            }
+            _isLoadingAffirmation.value = false
         }
     }
 

@@ -70,6 +70,8 @@ import com.example.R
 import com.example.data.model.MoonPhase
 import com.example.data.repository.DeckRepository
 import com.example.data.util.LunarInfo
+import com.example.ui.components.CardOfTheDaySection
+import com.example.ui.components.LunarBiorhythmReadingInfluenceTracker
 import com.example.ui.components.MoonPhaseVisualizer
 import com.example.ui.components.ProminentLunarBiorhythmTracker
 import com.example.ui.components.TarotCardView
@@ -97,6 +99,9 @@ fun DailyAlignmentScreen(
     val context = LocalContext.current
     val formState by viewModel.dailyForm.collectAsState()
     val currentLunarInfo by viewModel.currentLunarInfo.collectAsState()
+    val cardOfTheDayPair by viewModel.cardOfTheDay.collectAsState()
+    val cardOfTheDayAffirmation by viewModel.cardOfTheDayAffirmation.collectAsState()
+    val isLoadingAffirmation by viewModel.isLoadingAffirmation.collectAsState()
 
     var section1Expanded by remember { mutableStateOf(true) }
     var section2Expanded by remember { mutableStateOf(true) }
@@ -164,14 +169,25 @@ fun DailyAlignmentScreen(
             }
         }
 
-        // PROMINENT LIVE LUNAR PHASE & BIORHYTHM TRACKER
+        // PROMINENT LIVE LUNAR PHASE & BIORHYTHM READING INFLUENCE TRACKER
         item {
-            ProminentLunarBiorhythmTracker(
+            LunarBiorhythmReadingInfluenceTracker(
                 lunarInfo = currentLunarInfo,
-                onSyncToDailyForm = {
-                    viewModel.syncCalculatedLunarToDailyForm()
-                    Toast.makeText(context, "✦ Live Lunar Alignment Synced to Journal Form!", Toast.LENGTH_SHORT).show()
-                }
+                activeCard = drawnCard,
+                isReversed = isReversed
+            )
+        }
+
+        // RANDOMLY SELECTED CARD OF THE DAY WITH GEMINI AI AFFIRMATION
+        item {
+            val (cotdCard, cotdReversed) = cardOfTheDayPair
+            CardOfTheDaySection(
+                card = cotdCard,
+                isReversed = cotdReversed,
+                affirmation = cardOfTheDayAffirmation,
+                isLoadingAffirmation = isLoadingAffirmation,
+                onRefreshCard = { viewModel.refreshCardOfTheDay() },
+                onCardClick = { viewModel.openCardDetail(cotdCard, cotdReversed) }
             )
         }
 

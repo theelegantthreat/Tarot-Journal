@@ -129,6 +129,85 @@ object GeminiTarotService {
         }
     }
 
+    suspend fun generateDailyAffirmation(
+        card: com.example.data.model.TarotCard,
+        isReversed: Boolean
+    ): Result<String> = withContext(Dispatchers.IO) {
+        val apiKey = try {
+            BuildConfig.GEMINI_API_KEY
+        } catch (e: Exception) {
+            ""
+        }
+
+        val orientation = if (isReversed) "Reversed" else "Upright"
+        val prompt = """
+            Create an inspiring, poetic, and grounding 1-2 sentence daily affirmation based on the Tarot Card of the Day:
+            - Card: ${card.name} ($orientation)
+            - Archetype & Meaning: ${if (isReversed) card.reversedMeaning else card.uprightMeaning}
+            - Element: ${card.element.label}
+            - Astrological Transit: ${card.astrologyTransit}
+            
+            Return ONLY the affirmation text directly (no quotation marks or meta commentary).
+        """.trimIndent()
+
+        if (apiKey.isBlank() || apiKey == "MY_GEMINI_API_KEY") {
+            return@withContext Result.success(getLocalFallbackAffirmation(card, isReversed))
+        }
+
+        try {
+            val requestJson = JSONObject().apply {
+                put("contents", JSONArray().apply {
+                    put(JSONObject().apply {
+                        put("parts", JSONArray().apply {
+                            put(JSONObject().put("text", prompt))
+                        })
+                    })
+                })
+                put("generationConfig", JSONObject().apply {
+                    put("temperature", 0.7)
+                    put("maxOutputTokens", 120)
+                })
+            }
+
+            val requestBody = requestJson.toString().toRequestBody("application/json; charset=utf-8".toMediaType())
+            val url = "$BASE_URL/$MODEL_NAME:generateContent?key=$apiKey"
+            val request = Request.Builder()
+                .url(url)
+                .post(requestBody)
+                .build()
+
+            val response = client.newCall(request).execute()
+            val responseBody = response.body?.string() ?: ""
+
+            if (!response.isSuccessful) {
+                return@withContext Result.success(getLocalFallbackAffirmation(card, isReversed))
+            }
+
+            val jsonResponse = JSONObject(responseBody)
+            val candidates = jsonResponse.optJSONArray("candidates")
+            val firstCandidate = candidates?.optJSONObject(0)
+            val content = firstCandidate?.optJSONObject("content")
+            val parts = content?.optJSONArray("parts")
+            val text = parts?.optJSONObject(0)?.optString("text")?.trim()
+
+            if (!text.isNullOrBlank()) {
+                Result.success(text.removeSurrounding("\""))
+            } else {
+                Result.success(getLocalFallbackAffirmation(card, isReversed))
+            }
+        } catch (e: Exception) {
+            Result.success(getLocalFallbackAffirmation(card, isReversed))
+        }
+    }
+
+    private fun getLocalFallbackAffirmation(card: com.example.data.model.TarotCard, isReversed: Boolean): String {
+        return if (isReversed) {
+            "I embrace the subtle lessons of ${card.name}, turning inward to realign my energy, release hesitation, and restore inner harmony with patience."
+        } else {
+            "I walk forward with the luminous strength of ${card.name}, channeling ${card.element.label.lowercase()} clarity into intentional action and abundant growth."
+        }
+    }
+
     private fun generateLocalWisdomEngineSynthesis(
         spreadName: String,
         drawnCards: List<DrawnCard>,
