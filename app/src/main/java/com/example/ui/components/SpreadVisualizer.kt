@@ -179,14 +179,14 @@ fun SpreadVisualizer(
                 }
 
                 SpreadType.FIVE_CARD_CROSS -> {
-                    // 5-Card cross geometric layout
+                    // 5-Card cross geometric layout (scaled down 25% for optimal screen fit)
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         // Top (The Crown)
                         drawnCards.getOrNull(3)?.let { drawn ->
-                            SpreadCardSlot(drawn, 130.dp, 200.dp, onCardClick)
+                            SpreadCardSlot(drawn, 97.5.dp, 150.dp, onCardClick)
                         }
 
                         // Middle Row: (The Challenge / The Core / The Resolution)
@@ -195,19 +195,19 @@ fun SpreadVisualizer(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             drawnCards.getOrNull(1)?.let { drawn ->
-                                SpreadCardSlot(drawn, 130.dp, 200.dp, onCardClick)
+                                SpreadCardSlot(drawn, 97.5.dp, 150.dp, onCardClick)
                             }
                             drawnCards.getOrNull(0)?.let { drawn ->
-                                SpreadCardSlot(drawn, 130.dp, 200.dp, onCardClick)
+                                SpreadCardSlot(drawn, 97.5.dp, 150.dp, onCardClick)
                             }
                             drawnCards.getOrNull(4)?.let { drawn ->
-                                SpreadCardSlot(drawn, 130.dp, 200.dp, onCardClick)
+                                SpreadCardSlot(drawn, 97.5.dp, 150.dp, onCardClick)
                             }
                         }
 
                         // Bottom (The Root)
                         drawnCards.getOrNull(2)?.let { drawn ->
-                            SpreadCardSlot(drawn, 130.dp, 200.dp, onCardClick)
+                            SpreadCardSlot(drawn, 97.5.dp, 150.dp, onCardClick)
                         }
                     }
                 }
